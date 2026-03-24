@@ -17,7 +17,8 @@ export default function Home() {
           <img
             src="/masters-logo.jpg"
             alt="Masters Logo"
-            className="h-20 w-auto"
+            className="h-20 w-auto rounded"
+            style={{ backgroundColor: "#006747" }}
           />
           <div>
             <h1 className="text-4xl font-bold italic tracking-wide" style={{ fontFamily: "var(--font-masters)" }}>

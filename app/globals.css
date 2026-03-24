@@ -12,15 +12,20 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+body {
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Force select placeholder to grey, selected value to black */
+select {
+  color: #9ca3af;
+}
+select:has(option[value=""]:not(:checked)) {
+  color: black;
+}
+select option {
+  color: black;
+}
+select option[value=""] {
+  color: #9ca3af;
 }
