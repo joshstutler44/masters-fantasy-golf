@@ -12,13 +12,12 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-green-50">
       {/* Header */}
-      <header className="bg-green-800 text-white shadow-lg">
-        <div className="mx-auto px-8 py-5 flex items-center gap-5">
+      <header className="text-white shadow-lg" style={{ backgroundColor: "#006747" }}>
+        <div className="mx-auto px-8 py-5 flex items-center justify-center gap-5">
           <img
             src="/masters-logo.jpg"
             alt="Masters Logo"
             className="h-20 w-auto"
-            style={{ mixBlendMode: "multiply", backgroundColor: "#166534" }}
           />
           <div>
             <h1 className="text-4xl font-bold italic tracking-wide" style={{ fontFamily: "var(--font-masters)" }}>
@@ -40,9 +39,10 @@ export default function Home() {
               onClick={() => setTab(t)}
               className={`flex-1 py-3 text-sm font-semibold capitalize transition-colors ${
                 tab === t
-                  ? "text-green-700 border-b-2 border-green-700"
+                  ? "border-b-2"
                   : "text-gray-500 hover:text-gray-700"
               }`}
+              style={tab === t ? { color: "#006747", borderColor: "#006747" } : {}}
             >
               {t === "picks" ? "Make My Picks" : "Leaderboard"}
             </button>

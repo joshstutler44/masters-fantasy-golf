@@ -36,7 +36,7 @@ export default function Leaderboard() {
   return (
     <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
       <table className="w-full text-sm text-left">
-        <thead className="bg-green-800 text-white">
+        <thead className="text-white" style={{ backgroundColor: "#006747" }}>
           <tr>
             <th className="px-4 py-3 font-semibold w-12">POS</th>
             <th className="px-4 py-3 font-semibold">NAME</th>
@@ -56,17 +56,23 @@ export default function Leaderboard() {
             >
               <td className="px-4 py-3 font-bold text-gray-500">{i + 1}</td>
               <td className="px-4 py-3 font-semibold text-black">{entry.playerName}</td>
-              <td className={`px-4 py-3 font-bold text-right ${
-                entry.total < 0 ? "text-green-700" : entry.total === 0 ? "text-gray-600" : "text-red-600"
-              }`}>
+              <td
+                className={`px-4 py-3 font-bold text-right ${
+                  entry.total === 0 ? "text-gray-600" : entry.total > 0 ? "text-red-600" : ""
+                }`}
+                style={entry.total < 0 ? { color: "#006747" } : {}}
+              >
                 {formatScore(entry.total)}
               </td>
               {entry.golferScores.map((g: { id: string; name: string; score: number }) => (
                 <td key={g.id} className="px-4 py-3 text-center">
                   <div className="font-medium text-black">{g.name.split(" ").pop()}</div>
-                  <div className={`text-xs font-semibold ${
-                    g.score < 0 ? "text-green-700" : g.score === 0 ? "text-gray-500" : "text-red-600"
-                  }`}>
+                  <div
+                    className={`text-xs font-semibold ${
+                      g.score === 0 ? "text-gray-500" : g.score > 0 ? "text-red-600" : ""
+                    }`}
+                    style={g.score < 0 ? { color: "#006747" } : {}}
+                  >
                     {formatScore(g.score)}
                   </div>
                 </td>

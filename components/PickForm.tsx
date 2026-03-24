@@ -88,7 +88,8 @@ export default function PickForm() {
           value={playerName}
           onChange={(e) => setPlayerName(e.target.value)}
           placeholder="Enter your name"
-          className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+          className="w-full border border-gray-300 rounded-lg px-4 py-2 text-black placeholder:text-gray-400 focus:outline-none focus:ring-2"
+          style={{ "--tw-ring-color": "#006747" } as React.CSSProperties}
         />
       </div>
 
@@ -96,15 +97,14 @@ export default function PickForm() {
       <div>
         <div className="flex justify-between text-sm font-semibold mb-1">
           <span className="text-black">Salary Used</span>
-          <span className={overCap ? "text-red-600" : "text-green-700"}>
+          <span className={overCap ? "text-red-600" : ""} style={!overCap ? { color: "#006747" } : {}}>
             ${totalSalary.toLocaleString()} / ${SALARY_CAP.toLocaleString()}
           </span>
         </div>
         <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
           <div
-            className={`h-full rounded-full transition-all duration-300 ${
-              overCap ? "bg-red-500" : "bg-green-500"
-            }`}
+            className={`h-full rounded-full transition-all duration-300 ${overCap ? "bg-red-500" : ""}`}
+            style={!overCap ? { backgroundColor: "#006747" } : {}}
             style={{
               width: `${Math.min((totalSalary / SALARY_CAP) * 100, 100)}%`,
             }}
@@ -130,7 +130,7 @@ export default function PickForm() {
               <select
                 value={pick}
                 onChange={(e) => handlePick(i, e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 bg-white"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-black focus:outline-none focus:ring-2 bg-white"
               >
                 <option value="">-- Select golfer --</option>
                 {getAvailableGolfers(i).map((g) => (
@@ -155,10 +155,9 @@ export default function PickForm() {
         type="submit"
         disabled={!canSubmit}
         className={`w-full py-3 rounded-xl font-bold text-white transition-colors ${
-          canSubmit
-            ? "bg-green-700 hover:bg-green-800"
-            : "bg-gray-300 cursor-not-allowed"
+          canSubmit ? "" : "bg-gray-300 cursor-not-allowed"
         }`}
+        style={canSubmit ? { backgroundColor: "#006747" } : {}}
       >
         {overCap
           ? "Over Salary Cap"
