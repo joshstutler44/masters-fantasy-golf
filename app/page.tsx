@@ -13,14 +13,21 @@ export default function Home() {
     <main className="min-h-screen bg-green-50">
       {/* Header */}
       <header className="bg-green-800 text-white shadow-lg">
-        <div className="mx-auto px-4 py-6 text-center flex flex-col items-center gap-3">
-          <img src="/masters-logo.jpg" alt="Masters Logo" className="h-24 w-auto" />
-          <h1 className="text-4xl font-bold italic tracking-wide" style={{ fontFamily: "var(--font-masters)" }}>
-            Masters Fantasy Pool
-          </h1>
-          <p className="text-green-200 text-sm">
-            Pick 6 golfers · $50,000 salary cap
-          </p>
+        <div className="mx-auto px-8 py-5 flex items-center gap-5">
+          <img
+            src="/masters-logo.jpg"
+            alt="Masters Logo"
+            className="h-20 w-auto"
+            style={{ mixBlendMode: "multiply", backgroundColor: "#166534" }}
+          />
+          <div>
+            <h1 className="text-4xl font-bold italic tracking-wide" style={{ fontFamily: "var(--font-masters)" }}>
+              Masters Fantasy Pool
+            </h1>
+            <p className="text-green-200 text-sm mt-1">
+              Pick 6 golfers · $50,000 salary cap
+            </p>
+          </div>
         </div>
       </header>
 
