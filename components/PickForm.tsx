@@ -88,8 +88,8 @@ export default function PickForm() {
           value={playerName}
           onChange={(e) => setPlayerName(e.target.value)}
           placeholder="Enter your name"
-          className="w-full border border-gray-300 rounded-lg px-4 py-2 text-black placeholder:text-gray-400 focus:outline-none focus:ring-2"
-          style={{ "--tw-ring-color": "#006747" } as React.CSSProperties}
+          className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2"
+          style={{ color: "black" }}
         />
       </div>
 
@@ -130,7 +130,8 @@ export default function PickForm() {
               <select
                 value={pick}
                 onChange={(e) => handlePick(i, e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-black focus:outline-none focus:ring-2 bg-white"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 bg-white"
+                style={{ color: pick ? "black" : "#9ca3af" }}
               >
                 <option value="">-- Select golfer --</option>
                 {getAvailableGolfers(i).map((g) => (
