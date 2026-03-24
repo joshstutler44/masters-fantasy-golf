@@ -8,29 +8,17 @@ export default function Leaderboard() {
   const { isLoading, error, data } = db.useQuery({ submissions: {} });
 
   if (isLoading) {
-    return (
-      <div className="text-center py-12 text-gray-500">
-        Loading leaderboard…
-      </div>
-    );
+    return <div className="text-center py-12 text-gray-500">Loading leaderboard…</div>;
   }
 
   if (error) {
-    return (
-      <div className="text-center py-12 text-red-500">
-        Error loading data. Check your InstantDB App ID.
-      </div>
-    );
+    return <div className="text-center py-12 text-red-500">Error loading data. Check your InstantDB App ID.</div>;
   }
 
   const submissions = Object.values(data?.submissions ?? {});
 
   if (submissions.length === 0) {
-    return (
-      <div className="text-center py-12 text-gray-500">
-        No picks submitted yet. Be the first!
-      </div>
-    );
+    return <div className="text-center py-12 text-gray-500">No picks submitted yet. Be the first!</div>;
   }
 
   const ranked = submissions
@@ -39,72 +27,54 @@ export default function Leaderboard() {
         const score = MOCK_SCORES[gid]?.score ?? 0;
         const golfer = GOLFERS.find((g) => g.id === gid);
         return { id: gid, name: golfer?.name ?? gid, score };
-      });
+      }).sort((a: { score: number }, b: { score: number }) => a.score - b.score);
       const total = golferScores.reduce((s: number, g: { score: number }) => s + g.score, 0);
       return { ...sub, golferScores, total };
     })
     .sort((a, b) => a.total - b.total);
 
   return (
-    <div className="space-y-4">
-      {ranked.map((entry, i) => (
-        <div
-          key={entry.id}
-          className="border border-gray-200 rounded-xl p-4 bg-white shadow-sm"
-        >
-          {/* Header row */}
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-3">
-              <span className="text-2xl font-bold text-gray-400 w-8">
-                {i + 1}
-              </span>
-              <span className="text-lg font-bold text-gray-800">
-                {entry.playerName}
-              </span>
-            </div>
-            <span
-              className={`text-xl font-bold ${
-                entry.total < 0
-                  ? "text-green-700"
-                  : entry.total === 0
-                  ? "text-gray-600"
-                  : "text-red-600"
-              }`}
+    <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
+      <table className="w-full text-sm text-left">
+        <thead className="bg-green-800 text-white">
+          <tr>
+            <th className="px-4 py-3 font-semibold w-12">POS</th>
+            <th className="px-4 py-3 font-semibold">NAME</th>
+            <th className="px-4 py-3 font-semibold text-right">TOTAL</th>
+            {[1, 2, 3, 4, 5, 6].map((n) => (
+              <th key={n} className="px-4 py-3 font-semibold text-center">
+                G{n}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {ranked.map((entry, i) => (
+            <tr
+              key={entry.id}
+              className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}
             >
-              {formatScore(entry.total)}
-            </span>
-          </div>
-
-          {/* Golfer breakdown */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {entry.golferScores.map((g: { id: string; name: string; score: number }) => {
-              const pos = MOCK_SCORES[g.id]?.position ?? "—";
-              return (
-                <div
-                  key={g.id}
-                  className="bg-gray-50 rounded-lg px-3 py-2 flex justify-between items-center text-sm"
-                >
-                  <span className="text-gray-700 truncate pr-2">{g.name}</span>
-                  <div className="text-right shrink-0">
-                    <div
-                      className={`font-semibold ${
-                        g.score < 0
-                          ? "text-green-700"
-                          : g.score === 0
-                          ? "text-gray-600"
-                          : "text-red-600"
-                      }`}
-                    >
-                      {formatScore(g.score)}
-                    </div>
-                    <div className="text-xs text-gray-400">Pos: {pos}</div>
+              <td className="px-4 py-3 font-bold text-gray-500">{i + 1}</td>
+              <td className="px-4 py-3 font-semibold text-black">{entry.playerName}</td>
+              <td className={`px-4 py-3 font-bold text-right ${
+                entry.total < 0 ? "text-green-700" : entry.total === 0 ? "text-gray-600" : "text-red-600"
+              }`}>
+                {formatScore(entry.total)}
+              </td>
+              {entry.golferScores.map((g: { id: string; name: string; score: number }) => (
+                <td key={g.id} className="px-4 py-3 text-center">
+                  <div className="font-medium text-black">{g.name.split(" ").pop()}</div>
+                  <div className={`text-xs font-semibold ${
+                    g.score < 0 ? "text-green-700" : g.score === 0 ? "text-gray-500" : "text-red-600"
+                  }`}>
+                    {formatScore(g.score)}
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      ))}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

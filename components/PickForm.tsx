@@ -80,7 +80,7 @@ export default function PickForm() {
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Player name */}
       <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-1">
+        <label className="block text-sm font-semibold text-black mb-1">
           Your Name
         </label>
         <input
@@ -95,7 +95,7 @@ export default function PickForm() {
       {/* Salary cap meter */}
       <div>
         <div className="flex justify-between text-sm font-semibold mb-1">
-          <span className="text-gray-700">Salary Used</span>
+          <span className="text-black">Salary Used</span>
           <span className={overCap ? "text-red-600" : "text-green-700"}>
             ${totalSalary.toLocaleString()} / ${SALARY_CAP.toLocaleString()}
           </span>
@@ -124,7 +124,7 @@ export default function PickForm() {
           const golfer = GOLFERS.find((g) => g.id === pick);
           return (
             <div key={i}>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">
+              <label className="block text-sm font-semibold text-black mb-1">
                 Pick {i + 1}
               </label>
               <select
