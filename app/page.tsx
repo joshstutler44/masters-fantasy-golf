@@ -43,7 +43,7 @@ export default function Home() {
       </div>
 
       {/* Content */}
-      <div className="max-w-2xl mx-auto px-4 py-8">
+      <div className={`mx-auto px-4 py-8 ${tab === "leaderboard" ? "max-w-6xl" : "max-w-2xl"}`}>
         {tab === "picks" ? <PickForm /> : <Leaderboard />}
       </div>
     </main>
