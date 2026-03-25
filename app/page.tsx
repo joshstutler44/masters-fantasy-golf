@@ -4,12 +4,14 @@ import { useState, useEffect } from "react";
 import PickForm from "@/components/PickForm";
 import Leaderboard from "@/components/Leaderboard";
 import PlayerValues from "@/components/PlayerValues";
+import SwapForm from "@/components/SwapForm";
 
-type Tab = "picks" | "leaderboard" | "values";
+type Tab = "picks" | "leaderboard" | "values" | "swap";
 
 export default function Home() {
   const [tab, setTab] = useState<Tab>("picks");
   const [tournamentStarted, setTournamentStarted] = useState(false);
+  const [currentRound, setCurrentRound] = useState(1);
 
   useEffect(() => {
     async function checkStatus() {
@@ -18,14 +20,18 @@ export default function Home() {
         const json = await res.json();
         if (json.tournamentStarted) {
           setTournamentStarted(true);
-          setTab("leaderboard");
+          setTab((prev) => (prev === "picks" ? "leaderboard" : prev));
         }
+        if (json.currentRound) setCurrentRound(json.currentRound);
       } catch {}
     }
     checkStatus();
     const interval = setInterval(checkStatus, 60000);
     return () => clearInterval(interval);
   }, []);
+
+  const tabBtn = (active: boolean) =>
+    `flex-1 py-3 text-sm font-semibold transition-colors ${active ? "border-b-2" : "text-gray-500 hover:text-gray-700"}`;
 
   return (
     <main className="min-h-screen bg-green-50">
@@ -54,9 +60,7 @@ export default function Home() {
         <div className="max-w-2xl mx-auto px-4 flex">
           <button
             onClick={() => setTab("values")}
-            className={`flex-1 py-3 text-sm font-semibold transition-colors ${
-              tab === "values" ? "border-b-2" : "text-gray-500 hover:text-gray-700"
-            }`}
+            className={tabBtn(tab === "values")}
             style={tab === "values" ? { color: "#006747", borderColor: "#006747" } : {}}
           >
             Players & Values
@@ -64,19 +68,24 @@ export default function Home() {
           {!tournamentStarted && (
             <button
               onClick={() => setTab("picks")}
-              className={`flex-1 py-3 text-sm font-semibold transition-colors ${
-                tab === "picks" ? "border-b-2" : "text-gray-500 hover:text-gray-700"
-              }`}
+              className={tabBtn(tab === "picks")}
               style={tab === "picks" ? { color: "#006747", borderColor: "#006747" } : {}}
             >
               Make My Picks
             </button>
           )}
+          {tournamentStarted && (
+            <button
+              onClick={() => setTab("swap")}
+              className={tabBtn(tab === "swap")}
+              style={tab === "swap" ? { color: "#006747", borderColor: "#006747" } : {}}
+            >
+              Replace Player
+            </button>
+          )}
           <button
             onClick={() => setTab("leaderboard")}
-            className={`flex-1 py-3 text-sm font-semibold transition-colors ${
-              tab === "leaderboard" ? "border-b-2" : "text-gray-500 hover:text-gray-700"
-            }`}
+            className={tabBtn(tab === "leaderboard")}
             style={tab === "leaderboard" ? { color: "#006747", borderColor: "#006747" } : {}}
           >
             Leaderboard
@@ -86,7 +95,10 @@ export default function Home() {
 
       {/* Content */}
       <div className={`mx-auto px-4 py-8 ${tab === "leaderboard" ? "max-w-6xl" : "max-w-2xl"}`}>
-        {tab === "picks" ? <PickForm /> : tab === "leaderboard" ? <Leaderboard /> : <PlayerValues />}
+        {tab === "picks" && <PickForm />}
+        {tab === "leaderboard" && <Leaderboard />}
+        {tab === "values" && <PlayerValues />}
+        {tab === "swap" && <SwapForm currentRound={currentRound} />}
       </div>
     </main>
   );

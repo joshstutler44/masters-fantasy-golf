@@ -30,6 +30,7 @@ export async function GET() {
     const competitors = event?.competitions?.[0]?.competitors ?? [];
     const state = event?.status?.type?.state ?? "pre"; // "pre" | "in" | "post"
     const tournamentStarted = state === "in" || state === "post";
+    const currentRound: number = event?.status?.period ?? 1;
 
     const scores: Record<string, { score: number; position: string; name: string; status: PlayerStatus }> = {};
 
@@ -48,7 +49,7 @@ export async function GET() {
       };
     });
 
-    return NextResponse.json({ scores, tournamentStarted });
+    return NextResponse.json({ scores, tournamentStarted, currentRound });
   } catch {
     return NextResponse.json({ error: "Failed to fetch scores" }, { status: 500 });
   }
