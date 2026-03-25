@@ -8,6 +8,16 @@ function parseScore(scoreStr: string): number {
   return parseInt(scoreStr, 10) || 0;
 }
 
+type PlayerStatus = "active" | "cut" | "wd";
+
+function parseStatus(statusName: string | undefined): PlayerStatus {
+  if (!statusName) return "active";
+  const n = statusName.toUpperCase();
+  if (n.includes("CUT")) return "cut";
+  if (n.includes("WITHDRAW") || n === "STATUS_WD") return "wd";
+  return "active";
+}
+
 export async function GET() {
   try {
     const res = await fetch(
@@ -21,13 +31,20 @@ export async function GET() {
     const state = event?.status?.type?.state ?? "pre"; // "pre" | "in" | "post"
     const tournamentStarted = state === "in" || state === "post";
 
-    const scores: Record<string, { score: number; position: string; name: string }> = {};
+    const scores: Record<string, { score: number; position: string; name: string; status: PlayerStatus }> = {};
 
-    competitors.forEach((c: { id: string; order: number; score: string; athlete: { fullName: string } }) => {
+    competitors.forEach((c: {
+      id: string;
+      order: number;
+      score: string;
+      athlete: { fullName: string };
+      status?: { type?: { name?: string } };
+    }) => {
       scores[c.id] = {
         score: parseScore(c.score),
         position: String(c.order),
         name: c.athlete.fullName,
+        status: parseStatus(c.status?.type?.name),
       };
     });
 

@@ -4,10 +4,13 @@ import { useEffect, useState } from "react";
 import db from "@/lib/instantdb";
 import { GOLFERS } from "@/lib/golfers";
 
+type PlayerStatus = "active" | "cut" | "wd";
+
 type LiveScore = {
   score: number;
   position: string;
   name: string;
+  status: PlayerStatus;
 };
 
 type GolferScore = {
@@ -15,6 +18,7 @@ type GolferScore = {
   name: string;
   score: number;
   position: string;
+  status: PlayerStatus;
 };
 
 type RankedEntry = {
@@ -33,6 +37,14 @@ function scoreColor(score: number): React.CSSProperties {
   if (score < 0) return { color: "#006747" };
   if (score > 0) return { color: "#dc2626" };
   return { color: "#6b7280" };
+}
+
+function StatusBadge({ status }: { status: PlayerStatus }) {
+  if (status === "cut")
+    return <span className="ml-1 text-[10px] font-bold bg-gray-200 text-gray-600 rounded px-1">CUT</span>;
+  if (status === "wd")
+    return <span className="ml-1 text-[10px] font-bold bg-red-100 text-red-600 rounded px-1">WD</span>;
+  return null;
 }
 
 export default function Leaderboard() {
@@ -82,6 +94,7 @@ export default function Leaderboard() {
             name: golfer?.name ?? gid,
             score: live?.score ?? 0,
             position: live?.position ?? "—",
+            status: live?.status ?? "active",
           };
         })
         .sort((a: GolferScore, b: GolferScore) => a.score - b.score);
@@ -119,7 +132,10 @@ export default function Leaderboard() {
                 <td className="px-4 py-3 font-semibold text-black">{entry.playerName}</td>
                 {entry.golferScores.map((g) => (
                   <td key={g.id} className="px-4 py-3 text-center">
-                    <div className="font-medium text-black">{g.name.split(" ").pop()}</div>
+                    <div className="font-medium text-black flex items-center justify-center gap-0.5">
+                      {g.name.split(" ").pop()}
+                      <StatusBadge status={g.status} />
+                    </div>
                     <div className="text-xs font-semibold" style={scoreColor(g.score)}>
                       {formatScore(g.score)}
                     </div>
@@ -156,6 +172,7 @@ export default function Leaderboard() {
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-gray-400 w-4">{gi + 1}</span>
                     <span className="text-sm font-medium text-black">{g.name}</span>
+                    <StatusBadge status={g.status} />
                   </div>
                   <span className="text-sm font-bold" style={scoreColor(g.score)}>
                     {formatScore(g.score)}
