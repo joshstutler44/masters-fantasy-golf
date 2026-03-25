@@ -107,8 +107,8 @@ export default function Leaderboard() {
           <thead className="text-white" style={{ backgroundColor: "#006747" }}>
             <tr>
               <th className="px-4 py-3 font-semibold w-12">POS</th>
-              <th className="px-4 py-3 font-semibold">NAME</th>
-              <th className="px-4 py-3 font-semibold text-right">TOTAL</th>
+              <th className="px-4 py-3 font-semibold" style={{ borderLeft: "2px solid white" }}>NAME</th>
+              <th className="px-4 py-3 font-semibold text-right" style={{ borderLeft: "2px solid white" }}>TOTAL</th>
               <th className="px-4 py-3 font-semibold text-center" colSpan={6} style={{ borderLeft: "2px solid white" }}>PLAYERS</th>
             </tr>
           </thead>
