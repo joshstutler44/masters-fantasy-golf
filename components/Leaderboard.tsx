@@ -25,7 +25,7 @@ export default function Leaderboard() {
       try {
         const res = await fetch("/api/scores");
         const json = await res.json();
-        setLiveScores(json);
+        setLiveScores(json.scores ?? {});
       } catch {
         console.error("Failed to fetch live scores");
       } finally {

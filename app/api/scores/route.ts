@@ -16,7 +16,10 @@ export async function GET() {
     );
     const data = await res.json();
 
-    const competitors = data?.events?.[0]?.competitions?.[0]?.competitors ?? [];
+    const event = data?.events?.[0];
+    const competitors = event?.competitions?.[0]?.competitors ?? [];
+    const state = event?.status?.type?.state ?? "pre"; // "pre" | "in" | "post"
+    const tournamentStarted = state === "in" || state === "post";
 
     const scores: Record<string, { score: number; position: string; name: string }> = {};
 
@@ -28,7 +31,7 @@ export async function GET() {
       };
     });
 
-    return NextResponse.json(scores);
+    return NextResponse.json({ scores, tournamentStarted });
   } catch {
     return NextResponse.json({ error: "Failed to fetch scores" }, { status: 500 });
   }

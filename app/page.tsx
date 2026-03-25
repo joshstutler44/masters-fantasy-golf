@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PickForm from "@/components/PickForm";
 import Leaderboard from "@/components/Leaderboard";
 
@@ -8,6 +8,23 @@ type Tab = "picks" | "leaderboard";
 
 export default function Home() {
   const [tab, setTab] = useState<Tab>("picks");
+  const [tournamentStarted, setTournamentStarted] = useState(false);
+
+  useEffect(() => {
+    async function checkStatus() {
+      try {
+        const res = await fetch("/api/scores");
+        const json = await res.json();
+        if (json.tournamentStarted) {
+          setTournamentStarted(true);
+          setTab("leaderboard");
+        }
+      } catch {}
+    }
+    checkStatus();
+    const interval = setInterval(checkStatus, 60000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <main className="min-h-screen bg-green-50">
@@ -34,20 +51,26 @@ export default function Home() {
       {/* Tab bar */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-2xl mx-auto px-4 flex">
-          {(["picks", "leaderboard"] as Tab[]).map((t) => (
+          {!tournamentStarted && (
             <button
-              key={t}
-              onClick={() => setTab(t)}
-              className={`flex-1 py-3 text-sm font-semibold capitalize transition-colors ${
-                tab === t
-                  ? "border-b-2"
-                  : "text-gray-500 hover:text-gray-700"
+              onClick={() => setTab("picks")}
+              className={`flex-1 py-3 text-sm font-semibold transition-colors ${
+                tab === "picks" ? "border-b-2" : "text-gray-500 hover:text-gray-700"
               }`}
-              style={tab === t ? { color: "#006747", borderColor: "#006747" } : {}}
+              style={tab === "picks" ? { color: "#006747", borderColor: "#006747" } : {}}
             >
-              {t === "picks" ? "Make My Picks" : "Leaderboard"}
+              Make My Picks
             </button>
-          ))}
+          )}
+          <button
+            onClick={() => setTab("leaderboard")}
+            className={`flex-1 py-3 text-sm font-semibold transition-colors ${
+              tab === "leaderboard" ? "border-b-2" : "text-gray-500 hover:text-gray-700"
+            }`}
+            style={tab === "leaderboard" ? { color: "#006747", borderColor: "#006747" } : {}}
+          >
+            Leaderboard
+          </button>
         </div>
       </div>
 
