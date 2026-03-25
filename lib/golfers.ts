@@ -133,6 +133,8 @@ export const GOLFERS: Golfer[] = [
   { id: "khlee",          espnId: "7083",     name: "K.H. Lee",                       salary: 6100  },
   { id: "malnati",        espnId: "5692",     name: "Peter Malnati",                  salary: 6100  },
   { id: "rozo",           espnId: "7120",     name: "Marcelo Rozo",                   salary: 6100  },
+  { id: "cauley",         espnId: "5338",     name: "Bud Cauley",                     salary: 6900  },
+  { id: "mccarty",        espnId: "4901368",  name: "Matthew McCarty",                salary: 7200  },
   { id: "willett",        espnId: "4304",     name: "Danny Willett",                  salary: 6000  },
   { id: "schenk",         espnId: "10372",    name: "Adam Schenk",                    salary: 6000  },
   { id: "jkang",          espnId: "4408318",  name: "Jeffrey Kang",                   salary: 6000  },
