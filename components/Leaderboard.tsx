@@ -109,9 +109,7 @@ export default function Leaderboard() {
               <th className="px-4 py-3 font-semibold w-12">POS</th>
               <th className="px-4 py-3 font-semibold">NAME</th>
               <th className="px-4 py-3 font-semibold text-right">TOTAL</th>
-              {[1, 2, 3, 4, 5, 6].map((n) => (
-                <th key={n} className="px-4 py-3 font-semibold text-center">G{n}</th>
-              ))}
+              <th className="px-4 py-3 font-semibold text-center" colSpan={6}>PLAYERS</th>
             </tr>
           </thead>
           <tbody>
