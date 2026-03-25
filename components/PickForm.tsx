@@ -104,8 +104,8 @@ export default function PickForm() {
         <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
           <div
             className={`h-full rounded-full transition-all duration-300 ${overCap ? "bg-red-500" : ""}`}
-            style={!overCap ? { backgroundColor: "#006747" } : {}}
             style={{
+              backgroundColor: overCap ? undefined : "#006747",
               width: `${Math.min((totalSalary / SALARY_CAP) * 100, 100)}%`,
             }}
           />
