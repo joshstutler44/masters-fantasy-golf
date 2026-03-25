@@ -91,6 +91,14 @@ export default function Leaderboard() {
     })
     .sort((a, b) => a.total - b.total);
 
+  // Assign positions with proper tie handling (1, 2, 2, 4, ...)
+  const positions: number[] = [];
+  ranked.forEach((entry, i) => {
+    if (i === 0) positions.push(1);
+    else if (entry.total === ranked[i - 1].total) positions.push(positions[i - 1]);
+    else positions.push(i + 1);
+  });
+
   return (
     <>
       {/* ── DESKTOP TABLE (hidden on mobile) ── */}
@@ -109,7 +117,7 @@ export default function Leaderboard() {
           <tbody>
             {ranked.map((entry, i) => (
               <tr key={entry.id} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                <td className="px-4 py-3 font-bold text-gray-400">{i + 1}</td>
+                <td className="px-4 py-3 font-bold text-gray-400">{positions[i]}</td>
                 <td className="px-4 py-3 font-semibold text-black">{entry.playerName}</td>
                 <td className="px-4 py-3 font-bold text-right" style={scoreColor(entry.total)}>
                   {formatScore(entry.total)}
@@ -135,7 +143,7 @@ export default function Leaderboard() {
             {/* Card header */}
             <div className="flex items-center justify-between px-4 py-3 text-white" style={{ backgroundColor: "#006747" }}>
               <div className="flex items-center gap-3">
-                <span className="text-lg font-bold opacity-70">#{i + 1}</span>
+                <span className="text-lg font-bold opacity-70">#{positions[i]}</span>
                 <span className="text-lg font-bold">{entry.playerName}</span>
               </div>
               <span className="text-2xl font-extrabold" style={entry.total === 0 ? { color: "white" } : entry.total < 0 ? { color: "#bbf7d0" } : { color: "#fca5a5" }}>
