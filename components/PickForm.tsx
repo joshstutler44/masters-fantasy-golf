@@ -10,6 +10,7 @@ export default function PickForm() {
   const [picks, setPicks] = useState<string[]>(Array(PICK_COUNT).fill(""));
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
+  const [rulesOpen, setRulesOpen] = useState(false);
 
   const selectedGolfers: (Golfer | undefined)[] = picks.map((pid) =>
     GOLFERS.find((g) => g.id === pid)
@@ -79,39 +80,54 @@ export default function PickForm() {
   return (
     <div className="space-y-6">
       {/* Rules & Details */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-4">
-        <h2 className="text-lg font-bold text-black border-b border-gray-200 pb-2">Rules & Details</h2>
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        {/* Summary row — always visible */}
+        <button
+          type="button"
+          onClick={() => setRulesOpen((v) => !v)}
+          className="w-full flex items-center justify-between px-5 py-3 text-left"
+        >
+          <div>
+            <span className="font-bold text-black">Rules & Details</span>
+            <span className="text-sm text-gray-500 ml-3">Pick 6 · $50,000 cap · Lowest score wins</span>
+          </div>
+          <span className="text-gray-400 text-lg">{rulesOpen ? "▲" : "▼"}</span>
+        </button>
 
-        <div>
-          <p className="font-semibold text-black mb-1">Details:</p>
-          <ul className="space-y-1 text-sm text-gray-700 list-disc list-inside">
-            <li>
-              Fill out the Make Your Picks tab with your name and your team of 6 golfers
-              <ul className="list-disc list-inside ml-5 mt-1 space-y-1">
-                <li>Your total team value must be under $50,000</li>
-                <li>You must select 6 golfers</li>
-                <li>You may not select the same golfer twice</li>
+        {/* Expandable content */}
+        {rulesOpen && (
+          <div className="px-5 pb-5 space-y-4 border-t border-gray-100">
+            <div className="pt-3">
+              <p className="font-semibold text-black mb-1">Details:</p>
+              <ul className="space-y-1 text-sm text-gray-700 list-disc list-inside">
+                <li>
+                  Fill out the Make Your Picks tab with your name and your team of 6 golfers
+                  <ul className="list-disc list-inside ml-5 mt-1 space-y-1">
+                    <li>Your total team value must be under $50,000</li>
+                    <li>You must select 6 golfers</li>
+                    <li>You may not select the same golfer twice</li>
+                  </ul>
+                </li>
+                <li>A list of all eligible golfers with their values is located on the Players & Values tab and can be found within the player drop-down selection list</li>
+                <li>A live leaderboard can be found on the Leaderboard tab and can be accessed using desktop or mobile devices</li>
+                <li>Each participant will be allowed 2 submissions</li>
               </ul>
-            </li>
-            <li>A list of all eligible golfers with their values is located on the Players & Values tab and can be found within the player drop-down selection list</li>
-            <li>A live leaderboard can be found on the Leaderboard tab and can be accessed using desktop or mobile devices</li>
-            <li>Each participant will be allowed 2 submissions</li>
-          </ul>
-        </div>
-
-        <div>
-          <p className="font-semibold text-black mb-1">Rules:</p>
-          <ul className="space-y-1 text-sm text-gray-700 list-disc list-inside">
-            <li>Lowest cumulative score to par wins</li>
-            <li>If one of your selected players misses the cut, their cumulative score to par will be taken through the first 2 rounds</li>
-            <li>
-              In the case of a tie, the pot will be split between the participants based on their finishing positions to the field
-              <ul className="list-disc list-inside ml-5 mt-1">
-                <li>Example: 2 participants tie for 1st place = 1st place and 2nd place pot split between the two participants</li>
+            </div>
+            <div>
+              <p className="font-semibold text-black mb-1">Rules:</p>
+              <ul className="space-y-1 text-sm text-gray-700 list-disc list-inside">
+                <li>Lowest cumulative score to par wins</li>
+                <li>If one of your selected players misses the cut, their cumulative score to par will be taken through the first 2 rounds</li>
+                <li>
+                  In the case of a tie, the pot will be split between the participants based on their finishing positions to the field
+                  <ul className="list-disc list-inside ml-5 mt-1">
+                    <li>Example: 2 participants tie for 1st place = 1st place and 2nd place pot split between the two participants</li>
+                  </ul>
+                </li>
               </ul>
-            </li>
-          </ul>
-        </div>
+            </div>
+          </div>
+        )}
       </div>
 
     <form onSubmit={handleSubmit} className="space-y-6">
