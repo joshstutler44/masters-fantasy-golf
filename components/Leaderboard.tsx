@@ -109,7 +109,7 @@ export default function Leaderboard() {
               <th className="px-4 py-3 font-semibold w-12">POS</th>
               <th className="px-4 py-3 font-semibold">NAME</th>
               <th className="px-4 py-3 font-semibold text-right">TOTAL</th>
-              <th className="px-4 py-3 font-semibold text-center" colSpan={6}>PLAYERS</th>
+              <th className="px-4 py-3 font-semibold text-center" colSpan={6} style={{ borderLeft: "2px solid rgba(255,255,255,0.4)" }}>PLAYERS</th>
             </tr>
           </thead>
           <tbody>
@@ -120,8 +120,8 @@ export default function Leaderboard() {
                 <td className="px-4 py-3 font-bold text-right" style={scoreColor(entry.total)}>
                   {formatScore(entry.total)}
                 </td>
-                {entry.golferScores.map((g) => (
-                  <td key={g.id} className="px-4 py-3 text-center">
+                {entry.golferScores.map((g, gi) => (
+                  <td key={g.id} className="px-4 py-3 text-center" style={gi === 0 ? { borderLeft: "2px solid #006747" } : {}}>
                     <div className="font-medium text-black">{g.name.split(" ").pop()}</div>
                     <div className="text-xs font-semibold" style={scoreColor(g.score)}>
                       {formatScore(g.score)}
