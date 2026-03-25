@@ -52,6 +52,15 @@ export default function Home() {
       {/* Tab bar */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-2xl mx-auto px-4 flex">
+          <button
+            onClick={() => setTab("values")}
+            className={`flex-1 py-3 text-sm font-semibold transition-colors ${
+              tab === "values" ? "border-b-2" : "text-gray-500 hover:text-gray-700"
+            }`}
+            style={tab === "values" ? { color: "#006747", borderColor: "#006747" } : {}}
+          >
+            Players & Values
+          </button>
           {!tournamentStarted && (
             <button
               onClick={() => setTab("picks")}
@@ -71,15 +80,6 @@ export default function Home() {
             style={tab === "leaderboard" ? { color: "#006747", borderColor: "#006747" } : {}}
           >
             Leaderboard
-          </button>
-          <button
-            onClick={() => setTab("values")}
-            className={`flex-1 py-3 text-sm font-semibold transition-colors ${
-              tab === "values" ? "border-b-2" : "text-gray-500 hover:text-gray-700"
-            }`}
-            style={tab === "values" ? { color: "#006747", borderColor: "#006747" } : {}}
-          >
-            Players & Values
           </button>
         </div>
       </div>
