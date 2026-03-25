@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { GOLFERS } from "@/lib/golfers";
 import db from "@/lib/instantdb";
-import { id as newId } from "@instantdb/react";
 
 type PlayerStatus = "active" | "cut" | "wd";
 type LiveScore = { score: number; position: string; name: string; status: PlayerStatus };
@@ -13,7 +12,7 @@ export default function SwapForm({ currentRound }: { currentRound: number }) {
   const [searched, setSearched] = useState(false);
   const [liveScores, setLiveScores] = useState<Record<string, LiveScore>>({});
   const [replacements, setReplacements] = useState<Record<string, string>>({}); // key: `${subId}-${idx}` → golfer id
-  const [saved, setSaved] = useState<Record<string, boolean>>({});
+  const [justSwapped, setJustSwapped] = useState<Record<string, string>>({}); // key → name, cleared after 5s
   const [error, setError] = useState("");
 
   const { data } = db.useQuery({ submissions: {} });
@@ -81,8 +80,12 @@ export default function SwapForm({ currentRound }: { currentRound: number }) {
       await db.transact(
         db.tx.submissions[sub.id].update({ golfers: newPicks, totalSalary: newTotalSalary })
       );
-      setSaved((prev) => ({ ...prev, [key]: true }));
+      const replacedName = newGolfer?.name ?? replacementId;
+      setJustSwapped((prev) => ({ ...prev, [key]: replacedName }));
+      setReplacements((prev) => { const next = { ...prev }; delete next[key]; return next; });
       setError("");
+      // Clear the confirmation message after 5 seconds
+      setTimeout(() => setJustSwapped((prev) => { const next = { ...prev }; delete next[key]; return next; }), 5000);
     } catch {
       setError("Failed to save swap. Please try again.");
     }
@@ -150,7 +153,7 @@ export default function SwapForm({ currentRound }: { currentRound: number }) {
                   const status = getStatus(gid);
                   const isWd = status === "wd";
                   const key = `${sub.id}-${idx}`;
-                  const alreadySaved = saved[key];
+                  const swapConfirmName = justSwapped[key];
                   const available = isWd ? getAvailableReplacements(sub.golfers, gid) : [];
 
                   return (
@@ -165,38 +168,39 @@ export default function SwapForm({ currentRound }: { currentRound: number }) {
                         <span className="text-xs text-gray-500">${golfer?.salary.toLocaleString()}</span>
                       </div>
 
-                      {isWd && windowOpen && !alreadySaved && (
-                        <div className="mt-2 flex gap-2">
-                          <select
-                            value={replacements[key] ?? ""}
-                            onChange={(e) =>
-                              setReplacements((prev) => ({ ...prev, [key]: e.target.value }))
-                            }
-                            className="flex-1 border border-gray-300 rounded-lg px-3 py-1.5 text-sm bg-white focus:outline-none"
-                            style={{ color: replacements[key] ? "black" : "#9ca3af" }}
-                          >
-                            <option value="">— Select replacement —</option>
-                            {available.map((g) => (
-                              <option key={g.id} value={g.id}>
-                                {g.name} — ${g.salary.toLocaleString()}
-                              </option>
-                            ))}
-                          </select>
-                          <button
-                            onClick={() => handleSwap(sub, idx)}
-                            disabled={!replacements[key]}
-                            className="px-4 py-1.5 rounded-lg font-semibold text-sm text-white disabled:bg-gray-300"
-                            style={replacements[key] ? { backgroundColor: "#006747" } : {}}
-                          >
-                            Swap
-                          </button>
-                        </div>
-                      )}
-
-                      {isWd && windowOpen && alreadySaved && (
-                        <p className="mt-1 text-xs text-green-700 font-semibold">
-                          ✓ Swapped for {GOLFERS.find((g) => g.id === replacements[key])?.name}
-                        </p>
+                      {isWd && windowOpen && (
+                        <>
+                          {swapConfirmName && (
+                            <p className="mt-1 text-xs text-green-700 font-semibold">
+                              ✓ Swapped for {swapConfirmName}
+                            </p>
+                          )}
+                          <div className="mt-2 flex gap-2">
+                            <select
+                              value={replacements[key] ?? ""}
+                              onChange={(e) =>
+                                setReplacements((prev) => ({ ...prev, [key]: e.target.value }))
+                              }
+                              className="flex-1 border border-gray-300 rounded-lg px-3 py-1.5 text-sm bg-white focus:outline-none"
+                              style={{ color: replacements[key] ? "black" : "#9ca3af" }}
+                            >
+                              <option value="">— Select replacement —</option>
+                              {available.map((g) => (
+                                <option key={g.id} value={g.id}>
+                                  {g.name} — ${g.salary.toLocaleString()}
+                                </option>
+                              ))}
+                            </select>
+                            <button
+                              onClick={() => handleSwap(sub, idx)}
+                              disabled={!replacements[key]}
+                              className="px-4 py-1.5 rounded-lg font-semibold text-sm text-white disabled:bg-gray-300"
+                              style={replacements[key] ? { backgroundColor: "#006747" } : {}}
+                            >
+                              Swap
+                            </button>
+                          </div>
+                        </>
                       )}
 
                       {isWd && !windowOpen && (
