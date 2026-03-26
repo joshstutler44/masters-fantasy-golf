@@ -18,21 +18,42 @@ function parseStatus(statusName: string | undefined): PlayerStatus {
   return "active";
 }
 
+// Returns "F" (finished round), "1"-"17" (thru that hole), or "-" (not started)
+function parseThru(
+  linescores: { period: number; linescores?: unknown[] }[],
+  currentRound: number
+): string {
+  const roundLs = linescores.find((ls) => ls.period === currentRound);
+  if (!roundLs) return "-";
+  const holesCompleted = roundLs.linescores?.length ?? 0;
+  if (holesCompleted === 0) return "-";
+  if (holesCompleted >= 18) return "F";
+  return String(holesCompleted);
+}
+
 export async function GET() {
   try {
     const res = await fetch(
       `https://site.api.espn.com/apis/site/v2/sports/golf/pga/scoreboard?event=${EVENT_ID}`,
-      { next: { revalidate: 60 } } // cache for 60 seconds
+      { next: { revalidate: 60 } }
     );
     const data = await res.json();
 
     const event = data?.events?.[0];
-    const competitors = event?.competitions?.[0]?.competitors ?? [];
-    const state = event?.status?.type?.state ?? "pre"; // "pre" | "in" | "post"
+    const competition = event?.competitions?.[0];
+    const competitors = competition?.competitors ?? [];
+    const state = event?.status?.type?.state ?? "pre";
     const tournamentStarted = state === "in" || state === "post";
-    const currentRound: number = event?.status?.period ?? 1;
+    // period lives on competition.status, not event.status
+    const currentRound: number = competition?.status?.period ?? 1;
 
-    const scores: Record<string, { score: number; position: string; name: string; status: PlayerStatus }> = {};
+    const scores: Record<string, {
+      score: number;
+      position: string;
+      name: string;
+      status: PlayerStatus;
+      thru: string;
+    }> = {};
 
     competitors.forEach((c: {
       id: string;
@@ -40,12 +61,14 @@ export async function GET() {
       score: string;
       athlete: { fullName: string };
       status?: { type?: { name?: string } };
+      linescores?: { period: number; linescores?: unknown[] }[];
     }) => {
       scores[c.id] = {
         score: parseScore(c.score),
         position: String(c.order),
         name: c.athlete.fullName,
         status: parseStatus(c.status?.type?.name),
+        thru: parseThru(c.linescores ?? [], currentRound),
       };
     });
 

@@ -11,6 +11,7 @@ type LiveScore = {
   position: string;
   name: string;
   status: PlayerStatus;
+  thru: string;
 };
 
 type GolferScore = {
@@ -19,6 +20,7 @@ type GolferScore = {
   score: number;
   position: string;
   status: PlayerStatus;
+  thru: string;
 };
 
 type RankedEntry = {
@@ -95,6 +97,7 @@ export default function Leaderboard() {
             score: live?.score ?? 0,
             position: live?.position ?? "—",
             status: live?.status ?? "active",
+            thru: live?.thru ?? "-",
           };
         })
         .sort((a: GolferScore, b: GolferScore) => a.score - b.score);
@@ -139,6 +142,9 @@ export default function Leaderboard() {
                     <div className="text-xs font-semibold" style={scoreColor(g.score)}>
                       {formatScore(g.score)}
                     </div>
+                    <div className="text-[10px] text-gray-400">
+                      {g.thru === "F" ? "F" : g.thru === "-" ? "" : `Thru ${g.thru}`}
+                    </div>
                   </td>
                 ))}
                 <td className="px-4 py-3 font-bold text-right" style={scoreColor(entry.total)}>
@@ -174,9 +180,16 @@ export default function Leaderboard() {
                     <span className="text-sm font-medium text-black">{g.name}</span>
                     <StatusBadge status={g.status} />
                   </div>
-                  <span className="text-sm font-bold" style={scoreColor(g.score)}>
-                    {formatScore(g.score)}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    {g.thru !== "-" && (
+                      <span className="text-[10px] text-gray-400">
+                        {g.thru === "F" ? "F" : `Thru ${g.thru}`}
+                      </span>
+                    )}
+                    <span className="text-sm font-bold" style={scoreColor(g.score)}>
+                      {formatScore(g.score)}
+                    </span>
+                  </div>
                 </div>
               ))}
             </div>
